@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NgFor } from '@angular/common';
-import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-root',
