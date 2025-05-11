@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NgFor } from '@angular/common';
+import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,14 @@ import { NgFor } from '@angular/common';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  @ViewChild('addBtn') addButtonRef!: ElementRef<HTMLButtonElement>;
+
+  ngAfterViewInit() {
+    if (this.isOnSmallScreen()) {
+      this.addButtonRef.nativeElement.innerHTML = "+";
+    }
+  }
+
   student = {
     picture: '',
     nom: '',
@@ -32,6 +41,10 @@ export class AppComponent {
 
   title = 'school-manager';
 
+  isOnSmallScreen() {
+    return window.screen.availWidth < 600;
+  }
+
   onSubmit() {
     if (this.isFormValid()) {
       this.students.push(this.student);
@@ -42,8 +55,33 @@ export class AppComponent {
         dateDeNaissance: '',
         classe: 'CE1'
       };
+      this.closeModal('addStudentModal');
     } else {
       alert("Tous les champs sont requis.");
+    }
+  }
+
+  isModalOpen(modalId: string) {
+    if (!modalId.trim()) return false;
+
+    return document.getElementById(modalId)?.style.display != "none";
+  }
+
+  openModal(modalId: string) {
+    if (!modalId.trim()) return;
+
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = "flex";
+    }
+  }
+
+  closeModal(modalId: string) {
+    if (!modalId.trim()) return;
+
+    const modal = document.getElementById(modalId);
+    if (modal) {
+      modal.style.display = "none";
     }
   }
 }

@@ -1,207 +1,54 @@
-<style>
-  :root {
-    --primary-color: #3f51b5;
-    --primary-light: #e8eaf6;
-    --accent-color: #ff4081;
-    --text-color: #333;
-    --error-color: #f44336;
-    --success-color: #4caf50;
-    --border-radius: 4px;
-    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-  }
-
-  * {
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  }
-
-  body {
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-    color: var(--text-color);
-    line-height: 1.6;
-  }
-
-  .main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-  }
-
-  .container {
-    width: 100%;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    padding: 2rem;
-    margin: 0 auto;
-  }
-
-  h1 {
-    color: var(--primary-color);
-    text-align: center;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-  }
-
-  .form-group {
-    margin-bottom: 1.2rem;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #555;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    transition: var(--transition);
-  }
-
-  input:focus,
-  select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--primary-light);
-  }
-
-  .error {
-    color: var(--error-color);
-    font-size: 0.85rem;
-    margin-top: 0.3rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .error::before {
-    content: "⚠️";
-    margin-right: 0.3rem;
-  }
-
-  button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: var(--transition);
-    width: 100%;
-    margin-top: 1rem;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  button:hover:not([disabled]) {
-    background-color: #303f9f;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  }
-
-  button:disabled {
-    background-color: #b0bec5;
-    cursor: not-allowed;
-  }
-
-  @media (max-width: 600px) {
-    .container {
-      padding: 1.5rem;
-    }
-  }
-
-  form {
-    background-color: #fff;
-    padding: 2rem;
-    box-shadow: 0 0 5px #33333322;
-    transition: 0.8s;
-  }
-
-  form:hover {
-    box-shadow: 0 1rem 5px #33333322;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-  }
-
-  th,
-  td {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-
-  td>img {
-    width: 10rem;
-  }
-
-  th {
-    background-color: var(--primary-light);
-    color: var(--primary-color);
-    font-weight: 600;
-  }
-</style>
-
 <main class="main">
-  <div class="container">
-    <h1>Ajouter un étudiant</h1>
+  <header class="header">
+    <h1>School Manager</h1>
+    <button #addBtn (click)="openModal('addStudentModal')">Ajouter un étudiant</button>
+  </header>
 
-    <form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="picture">Image</label>
-        <input type="text" id="picture" name="picture" [(ngModel)]="student.picture" required>
-        <div *ngIf="!student.picture" class="error">L'image est requise.</div>
-      </div>
+  <div *ngIf="students.length > 0 || isModalOpen('addStudentModal')" class="container">
+    <div class="modal" id="addStudentModal">
+      <form (ngSubmit)="onSubmit()" id="addStudentForm">
+        <button id="closeModalBtn" type="button" (click)="closeModal('addStudentModal')">✖</button>
+        <div class="form-group">
+          <label for="picture">Image</label>
+          <input type="text" id="picture" name="picture" [(ngModel)]="student.picture" required>
+          <div *ngIf="!student.picture" class="error">L'image est requise.</div>
+        </div>
 
-      <div class="form-group">
-        <label for="nom">Nom</label>
-        <input type="text" id="nom" name="nom" [(ngModel)]="student.nom" required>
-        <div *ngIf="!student.nom" class="error">Le nom est requis.</div>
-      </div>
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" [(ngModel)]="student.nom" required>
+          <div *ngIf="!student.nom" class="error">Le nom est requis.</div>
+        </div>
 
-      <div class="form-group">
-        <label for="prenom">Prénom</label>
-        <input type="text" id="prenom" name="prenom" [(ngModel)]="student.prenom" required>
-        <div *ngIf="!student.prenom" class="error">Le prénom est requis.</div>
-      </div>
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" id="prenom" name="prenom" [(ngModel)]="student.prenom" required>
+          <div *ngIf="!student.prenom" class="error">Le prénom est requis.</div>
+        </div>
 
-      <div class="form-group">
-        <label for="dateDeNaissance">Date de naissance</label>
-        <input type="date" id="dateDeNaissance" name="dateDeNaissance" [(ngModel)]="student.dateDeNaissance" required>
-        <div *ngIf="!student.dateDeNaissance" class="error">La date de naissance est requise.</div>
-      </div>
+        <div class="form-group">
+          <label for="dateDeNaissance">Date de naissance</label>
+          <input type="date" id="dateDeNaissance" name="dateDeNaissance" [(ngModel)]="student.dateDeNaissance" required>
+          <div *ngIf="!student.dateDeNaissance" class="error">La date de naissance est requise.</div>
+        </div>
 
-      <div class="form-group">
-        <label for="classe">Classe</label>
-        <select id="classe" name="classe" [(ngModel)]="student.classe" required>
-          <option value="">Sélectionnez une classe</option>
-          <option value="CE1">CE1</option>
-          <option value="CE2">CE2</option>
-          <option value="CM1">CM1</option>
-          <option value="CM2">CM2</option>
-        </select>
-        <div *ngIf="!student.classe" class="error">La classe est requise.</div>
-      </div>
+        <div class="form-group">
+          <label for="classe">Classe</label>
+          <select id="classe" name="classe" [(ngModel)]="student.classe" required>
+            <option value="">Sélectionnez une classe</option>
+            <option value="CE1">CE1</option>
+            <option value="CE2">CE2</option>
+            <option value="CM1">CM1</option>
+            <option value="CM2">CM2</option>
+          </select>
+          <div *ngIf="!student.classe" class="error">La classe est requise.</div>
+        </div>
 
-      <button type="submit" [disabled]="!isFormValid()">
-        Ajouter l'étudiant
-      </button>
-    </form>
+        <button type="submit" [disabled]="!isFormValid()">
+          Ajouter l'étudiant
+        </button>
+      </form>
+    </div>
 
     <div *ngIf="students.length > 0">
       <h2>Liste des étudiants</h2>
